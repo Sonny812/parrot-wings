@@ -27,12 +27,30 @@ class ServiceAccount extends AbstractAccount
 
     /**
      * ServiceAccount constructor.
-     *
-     * @param string $tag
      */
-    public function __construct(string $tag)
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTag(): string
+    {
+        return $this->tag;
+    }
+
+    /**
+     * @param string $tag
+     *
+     * @return ServiceAccount
+     */
+    public function setTag(string $tag): ServiceAccount
     {
         $this->tag = $tag;
+
+        return $this;
     }
 
     /**
