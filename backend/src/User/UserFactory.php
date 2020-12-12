@@ -9,6 +9,8 @@
 
 namespace App\User;
 
+use App\Account\AccountFactoryInterface;
+use App\Account\UserAccountFactory;
 use App\DTO\RegisterUserDTO;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -21,13 +23,20 @@ class UserFactory
     private UserPasswordEncoderInterface $passwordEncoder;
 
     /**
+     * @var \App\Account\AccountFactoryInterface
+     */
+    private AccountFactoryInterface $accountFactory;
+
+    /**
      * UserFactory constructor.
      *
      * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder
+     * @param \App\Account\UserAccountFactory                                       $accountFactory
      */
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, UserAccountFactory $accountFactory)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->accountFactory  = $accountFactory;
     }
 
     /**
@@ -41,7 +50,8 @@ class UserFactory
 
         $user
             ->setUsername($userDTO->getUsername())
-            ->setEmail($userDTO->getEmail());
+            ->setEmail($userDTO->getEmail())
+            ->setAccount($this->accountFactory->createAccount());
 
         $encodedPassword = $this->passwordEncoder->encodePassword($user, $userDTO->getRawPassword());
 
