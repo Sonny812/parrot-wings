@@ -9,6 +9,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Account\AbstractAccount;
+use App\Entity\Account\UserAccount;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -78,13 +80,20 @@ class User implements UserInterface
     private bool $blocked;
 
     /**
+     * @var \App\Entity\Account\AbstractAccount
+     *
+     * @ORM\OneToOne(targetEntity=UserAccount::class, cascade={"persist"})
+     */
+    private AbstractAccount $account;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
-        $this->roles = [];
+        $this->roles   = [];
         $this->blocked = false;
-        $this->salt = bin2hex(random_bytes(64));
+        $this->salt    = bin2hex(random_bytes(64));
     }
 
     /**
@@ -243,6 +252,26 @@ class User implements UserInterface
     public function setBlocked(bool $blocked): User
     {
         $this->blocked = $blocked;
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Entity\Account\AbstractAccount
+     */
+    public function getAccount(): AbstractAccount
+    {
+        return $this->account;
+    }
+
+    /**
+     * @param \App\Entity\Account\AbstractAccount $account
+     *
+     * @return User
+     */
+    public function setAccount(AbstractAccount $account): User
+    {
+        $this->account = $account;
 
         return $this;
     }
