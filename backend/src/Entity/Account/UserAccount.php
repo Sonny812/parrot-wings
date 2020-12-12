@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User account
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\Account\UserAccountRepository")
  */
 class UserAccount extends AbstractAccount
 {

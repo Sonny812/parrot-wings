@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Service account
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\Account\ServiceAccountRepository")
  */
 class ServiceAccount extends AbstractAccount
 {
