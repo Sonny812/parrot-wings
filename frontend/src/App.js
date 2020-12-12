@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {Admin, Resource, ListGuesser,} from 'react-admin';
+import {Route} from 'react-router-dom';
+import Login from "./login";
+import jsonServerProvider from 'ra-data-json-server'
+import authProvider from './authProvider';
+import Register from './register'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+    <Admin
+        authProvider={authProvider}
+        loginPage={Login}
+        dataProvider={jsonServerProvider(process.env.REACT_APP_API_URL)}
+        customRoutes={[
+            <Route exact path="/register" component={Register} noLayout/>
+        ]}
+    >
+        <Resource name='users' list={ListGuesser}/>
+    </Admin>
+);
 
 export default App;
