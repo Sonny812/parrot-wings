@@ -69,6 +69,8 @@ class User implements UserInterface
      * @var string|null
      *
      * @ORM\Column(nullable=true)
+     *
+     * @Groups({"with_token"})
      */
     private ?string $token;
 

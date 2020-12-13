@@ -100,8 +100,9 @@ class SecurityController extends AbstractController
         $this->em->flush();
 
         return JsonResponse::fromJsonString($this->serializer->serialize($user, 'json', [
-            'show_user',
-            'with_balance',
+            'groups' => [
+                'show_user', 'with_balance', 'with_token', 'with_roles'
+            ],
         ]));
     }
 
