@@ -5,7 +5,7 @@ import Login from "./login";
 import jsonServerProvider from 'ra-data-json-server'
 import authProvider from './authProvider';
 import Register from './register'
-import {transactionList, transactionShow, transactionCreate} from "./transaction";
+import {TransactionList, TransactionShow, TransactionCreate} from "./transaction";
 
 const httpClient = (url, options = {}) => {
     if (!options.headers) {
@@ -27,7 +27,7 @@ const App = () => (
             <Route exact path="/register" component={Register} noLayout/>
         ]}
     >
-        <Resource name='transaction' create={transactionCreate} show={transactionShow} list={transactionList}/>
+        <Resource name='transaction' create={TransactionCreate} show={TransactionShow} list={TransactionList}/>
         <Resource name='user'/>
     </Admin>
 );
