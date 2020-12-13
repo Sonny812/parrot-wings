@@ -36,7 +36,7 @@ class ServiceAccount extends AbstractAccount
     /**
      * @inheritDoc
      */
-    public function canHaveNegativeBalance(): bool
+    public function isNegativeBalanceAllowed(): bool
     {
         return true;
     }

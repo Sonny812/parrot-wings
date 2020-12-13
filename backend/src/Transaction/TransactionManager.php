@@ -11,7 +11,9 @@ namespace App\Transaction;
 
 use App\Entity\Account\AbstractAccount;
 use App\Entity\Transaction;
+use App\Exception\Account\NegativeBalanceException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class TransactionManager
 {
@@ -41,14 +43,18 @@ class TransactionManager
     {
         $transaction = new Transaction($from, $to, $amount);
 
-        $this->em->transactional(function ($em) use ($transaction) {
-            $em->persist($transaction);
+        try {
+            $this->em->transactional(function ($em) use ($transaction) {
+                $em->persist($transaction);
 
-            $amount = $transaction->getAmount();
+                $amount = $transaction->getAmount();
 
-            $transaction->getFrom()->decreaseBalance($amount);
-            $transaction->getTo()->increaseBalance($amount);
-        });
+                $transaction->getFrom()->decreaseBalance($amount);
+                $transaction->getTo()->increaseBalance($amount);
+            });
+        } catch (NegativeBalanceException $exception) {
+            throw new ConflictHttpException('Creating this transaction will result in a negative balance on any account');
+        }
 
         return $transaction;
     }

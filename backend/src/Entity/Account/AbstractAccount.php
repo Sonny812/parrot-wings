@@ -9,6 +9,7 @@
 
 namespace App\Entity\Account;
 
+use App\Exception\Account\NegativeBalanceException;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -52,7 +53,7 @@ abstract class AbstractAccount
     /**
      * @return bool
      */
-    abstract public function canHaveNegativeBalance(): bool;
+    abstract public function isNegativeBalanceAllowed(): bool;
 
     /**
      * @return string
@@ -87,9 +88,15 @@ abstract class AbstractAccount
 
     /**
      * @param int $amount
+     *
+     * @throws \App\Exception\Account\NegativeBalanceException
      */
     public function decreaseBalance(int $amount): void
     {
         $this->balance -= $amount;
+
+        if ($this->balance < 0 && !$this->isNegativeBalanceAllowed()) {
+            throw new NegativeBalanceException();
+        }
     }
 }
