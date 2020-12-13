@@ -16,10 +16,12 @@ use App\Repository\UserRepository;
 use App\User\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Security controller
@@ -32,18 +34,26 @@ class SecurityController extends AbstractController
 
     private UserPasswordEncoderInterface $encoder;
 
+    private SerializerInterface $serializer;
+
     /**
      * SecurityController constructor.
      *
      * @param \App\User\UserFactory                                                 $userFactory
      * @param \Doctrine\ORM\EntityManagerInterface                                  $em
      * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $encoder
+     * @param \Symfony\Component\Serializer\SerializerInterface                     $serializer
      */
-    public function __construct(UserFactory $userFactory, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
-    {
+    public function __construct(
+        UserFactory $userFactory,
+        EntityManagerInterface $em,
+        UserPasswordEncoderInterface $encoder,
+        SerializerInterface $serializer
+    ) {
         $this->userFactory = $userFactory;
         $this->em          = $em;
         $this->encoder     = $encoder;
+        $this->serializer  = $serializer;
     }
 
     /**
@@ -89,9 +99,10 @@ class SecurityController extends AbstractController
 
         $this->em->flush();
 
-        return $this->json([
-            'token' => $token,
-        ]);
+        return JsonResponse::fromJsonString($this->serializer->serialize($user, 'json', [
+            'show_user',
+            'with_balance',
+        ]));
     }
 
     /**
