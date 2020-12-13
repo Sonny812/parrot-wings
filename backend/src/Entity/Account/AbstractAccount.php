@@ -10,6 +10,7 @@
 namespace App\Entity\Account;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Account
@@ -26,6 +27,8 @@ abstract class AbstractAccount
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      * @ORM\Id()
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private int $id;
 
@@ -33,6 +36,8 @@ abstract class AbstractAccount
      * @var int
      *
      * @ORM\Column(type="integer")
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private int $balance;
 
@@ -48,6 +53,13 @@ abstract class AbstractAccount
      * @return bool
      */
     abstract public function canHaveNegativeBalance(): bool;
+
+    /**
+     * @return string
+     *
+     * @Groups({"show_transaction", "list_transaction"})
+     */
+    abstract public function getDisplayName(): string;
 
     /**
      * @return int

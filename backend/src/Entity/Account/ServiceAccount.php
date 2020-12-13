@@ -34,6 +34,22 @@ class ServiceAccount extends AbstractAccount
     }
 
     /**
+     * @inheritDoc
+     */
+    public function canHaveNegativeBalance(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDisplayName(): string
+    {
+        return sprintf('Service (%s)', $this->tag);
+    }
+
+    /**
      * @return string
      */
     public function getTag(): string
@@ -51,13 +67,5 @@ class ServiceAccount extends AbstractAccount
         $this->tag = $tag;
 
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function canHaveNegativeBalance(): bool
-    {
-        return true;
     }
 }

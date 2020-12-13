@@ -9,6 +9,7 @@
 
 namespace App\Entity\Account;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,10 +20,25 @@ use Doctrine\ORM\Mapping as ORM;
 class UserAccount extends AbstractAccount
 {
     /**
+     * @var \App\Entity\User
+     *
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="account")
+     */
+    private User $user;
+
+    /**
      * @inheritDoc
      */
     public function canHaveNegativeBalance(): bool
     {
         return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDisplayName(): string
+    {
+        return sprintf("%s (%s)", $this->user->getUsername(), $this->user->getEmail());
     }
 }

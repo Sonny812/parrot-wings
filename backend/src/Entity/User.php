@@ -82,7 +82,7 @@ class User implements UserInterface
     /**
      * @var \App\Entity\Account\AbstractAccount
      *
-     * @ORM\OneToOne(targetEntity=UserAccount::class, cascade={"persist"})
+     * @ORM\OneToOne(targetEntity=UserAccount::class, cascade={"persist"}, inversedBy="user")
      */
     private AbstractAccount $account;
 

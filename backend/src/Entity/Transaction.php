@@ -12,6 +12,7 @@ namespace App\Entity;
 use App\Entity\Account\AbstractAccount;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Transaction
@@ -26,6 +27,8 @@ class Transaction
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      * @ORM\Id()
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private ?int $id;
 
@@ -33,6 +36,8 @@ class Transaction
      * @var \App\Entity\Account\AbstractAccount
      *
      * @ORM\ManyToOne(targetEntity=AbstractAccount::class, cascade={"persist"})
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private AbstractAccount $from;
 
@@ -40,6 +45,8 @@ class Transaction
      * @var \App\Entity\Account\AbstractAccount
      *
      * @ORM\ManyToOne(targetEntity=AbstractAccount::class, cascade={"persist"})
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private AbstractAccount $to;
 
@@ -47,6 +54,8 @@ class Transaction
      * @var int
      *
      * @ORM\Column(type="integer")
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private int $amount;
 
@@ -54,6 +63,8 @@ class Transaction
      * @var \DateTimeImmutable
      *
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @Groups({"show_transaction", "list_transaction"})
      */
     private DateTimeImmutable $createdAt;
 
