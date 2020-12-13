@@ -10,7 +10,37 @@
 namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 class UserRepository extends EntityRepository
 {
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function createDefaultQueryBuilder(): QueryBuilder
+    {
+        return $this
+            ->createQueryBuilder('user')
+            ->join('user.account', 'account');
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder $qb
+     * @param string                     $searchQuery
+     *
+     * @return $this
+     */
+    public function applySearchQuery(QueryBuilder $qb, string $searchQuery): self
+    {
+        $qb
+            ->andWhere(
+                $qb->expr()->orX(
+                    'user.email LIKE :search_query',
+                    'user.username LIKE :search_query'
+                )
+            )
+            ->setParameter(':search_query', "%$searchQuery%");
+
+        return $this;
+    }
 }
