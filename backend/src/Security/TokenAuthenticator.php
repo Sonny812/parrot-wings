@@ -74,11 +74,15 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     }
 
     /**
-     * @inheritDoc
+     * @param mixed                                               $credentials
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     *
+     * @return bool
      */
     public function checkCredentials($credentials, UserInterface $user): bool
     {
-        return true;
+        /** @var \App\Entity\User $user */
+        return !$user->isBlocked();
     }
 
     /**
