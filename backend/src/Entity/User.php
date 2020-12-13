@@ -13,6 +13,7 @@ use App\Entity\Account\AbstractAccount;
 use App\Entity\Account\UserAccount;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * User
@@ -27,6 +28,8 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      * @ORM\Id()
+     *
+     * @Groups({"show_user", "list_user"})
      */
     private ?int $id;
 
@@ -34,6 +37,8 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column
+     *
+     * @Groups({"show_user", "list_user"})
      */
     private string $username;
 
@@ -55,20 +60,24 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column
+     *
+     * @Groups({"show_user", "list_user"})
      */
     private string $email;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(nullable=true)
      */
-    private string $token;
+    private ?string $token;
 
     /**
      * @var array
      *
      * @ORM\Column(type="simple_array", nullable=true)
+     *
+     * @Groups({"with_roles"})
      */
     private array $roles;
 
@@ -83,6 +92,8 @@ class User implements UserInterface
      * @var \App\Entity\Account\AbstractAccount
      *
      * @ORM\OneToOne(targetEntity=UserAccount::class, cascade={"persist"}, inversedBy="user")
+     *
+     * @Groups({"show_user", "list_user"})
      */
     private AbstractAccount $account;
 
@@ -197,19 +208,19 @@ class User implements UserInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
 
     /**
-     * @param string $token
+     * @param string|null $token
      *
      * @return User
      */
-    public function setToken(string $token): User
+    public function setToken(?string $token): User
     {
         $this->token = $token;
 

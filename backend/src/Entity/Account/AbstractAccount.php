@@ -28,7 +28,7 @@ abstract class AbstractAccount
      * @ORM\GeneratedValue()
      * @ORM\Id()
      *
-     * @Groups({"show_transaction", "list_transaction"})
+     * @Groups({"show_transaction", "list_transaction", "show_user", "list_user"})
      */
     private int $id;
 
@@ -37,7 +37,7 @@ abstract class AbstractAccount
      *
      * @ORM\Column(type="integer")
      *
-     * @Groups({"show_transaction", "list_transaction"})
+     * @Groups({"with_balance"})
      */
     private int $balance;
 
@@ -57,7 +57,7 @@ abstract class AbstractAccount
     /**
      * @return string
      *
-     * @Groups({"show_transaction", "list_transaction"})
+     * @Groups({"show_transaction", "list_transaction", "show_user", "list_user"})
      */
     abstract public function getDisplayName(): string;
 
