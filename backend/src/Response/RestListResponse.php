@@ -23,11 +23,12 @@ class RestListResponse extends JsonResponse
      * @param \App\DTO\RestListDTO                              $restListDTO
      * @param \Doctrine\ORM\Query|\Doctrine\ORM\QueryBuilder    $query
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
+     * @param array                                             $serializationGroups
      */
-    public function __construct(RestListDTO $restListDTO, $query, SerializerInterface $serializer)
+    public function __construct(RestListDTO $restListDTO, $query, SerializerInterface $serializer, array $serializationGroups)
     {
         $pagination = Paginator::createFromRestListDTO($restListDTO, $query);
-        $json       = $serializer->serialize($pagination, 'json');
+        $json       = $serializer->serialize($pagination, 'json', ['groups' => $serializationGroups]);
 
         parent::__construct($json, Response::HTTP_OK, ['X-Total-Count' => count($pagination)], true);
     }
