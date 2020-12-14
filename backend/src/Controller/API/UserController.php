@@ -57,14 +57,14 @@ class UserController extends AbstractController
     public function index(UserRestListDTO $restListDTO): Response
     {
         $repository = $this->getUserRepository();
-        $qb         = $repository->createDefaultQueryBuilder();
+        $qb         = $repository->getQueryForFilteredList($restListDTO->getUserFilterDTO());
 
         $searchQuery = $restListDTO->getSearchQuery();
 
         if (null !== $searchQuery) {
             $repository->applySearchQuery($qb, $searchQuery);
         }
-
+        
         $groups = ['list_user'];
 
         if ($this->isGranted('ROLE_ADMIN')) {

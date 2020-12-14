@@ -9,6 +9,7 @@
 
 namespace App\Repository;
 
+use App\DTO\UserFilterDTO;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -22,6 +23,20 @@ class UserRepository extends EntityRepository
         return $this
             ->createQueryBuilder('user')
             ->join('user.account', 'account');
+    }
+
+    /**
+     * @param \App\DTO\UserFilterDTO|null $userFilterDTO
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getQueryForFilteredList(?UserFilterDTO $userFilterDTO): QueryBuilder
+    {
+        $qb = $this->createDefaultQueryBuilder();
+
+        $this->applyFilter($qb, $userFilterDTO);
+
+        return $qb;
     }
 
     /**
@@ -40,6 +55,39 @@ class UserRepository extends EntityRepository
                 )
             )
             ->setParameter(':search_query', "%$searchQuery%");
+
+        return $this;
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder  $qb
+     * @param \App\DTO\UserFilterDTO|null $userFilterDTO
+     *
+     * @return \App\Repository\UserRepository
+     */
+    private function applyFilter(QueryBuilder $qb, ?UserFilterDTO $userFilterDTO): self
+    {
+        if (null === $userFilterDTO) {
+            return $this;
+        }
+
+        $balanceRangeDTO = $userFilterDTO->getBalanceRangeDTO();
+
+        if (null !== $balanceRangeDTO) {
+            $min = $balanceRangeDTO->getMin();
+            if (null !== $min) {
+                $qb
+                    ->andWhere('account.balance >= :min_balance')
+                    ->setParameter('min_balance', $min);
+            }
+
+            $max = $balanceRangeDTO->getMax();
+            if (null !== $max) {
+                $qb
+                    ->andWhere('account.balance <= :max_balance')
+                    ->setParameter('max_balance', $max);
+            }
+        }
 
         return $this;
     }
