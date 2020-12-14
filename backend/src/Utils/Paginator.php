@@ -22,12 +22,17 @@ class Paginator extends DoctrinePaginator
      */
     public static function createFromRestListDTO(RestListDTO $restListDTO, $query): self
     {
-        $rootAlias = $query->getRootAliases()[0];
-
         $query
-            ->addOrderBy(sprintf('%s.%s', $rootAlias, $restListDTO->getSortField()), $restListDTO->getSortDirection())
             ->setFirstResult($restListDTO->getStart())
             ->setMaxResults($restListDTO->getEnd() - $restListDTO->getStart());
+
+        $sortField = $restListDTO->getSortField();
+
+        $orderByField = preg_match('/\w+\.\w+/', $sortField) ?
+            $sortField :
+            sprintf('%s.%s', $query->getRootAliases()[0], $sortField);
+
+        $query->addOrderBy($orderByField, $restListDTO->getSortDirection());
 
         return new self($query);
     }
