@@ -14,7 +14,9 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Response\RestListResponse;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -23,6 +25,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  * User controller
  *
  * @Route("/user")
+ *
  */
 class UserController extends AbstractController
 {
@@ -60,8 +63,40 @@ class UserController extends AbstractController
             $repository->applySearchQuery($qb, $searchQuery);
         }
 
-        return new RestListResponse($restListDTO, $qb, $this->serializer, ['list_user']);
+        $groups = ['list_user'];
 
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $groups [] = 'with_balance';
+        }
+
+        return new RestListResponse($restListDTO, $qb, $this->serializer, $groups);
+    }
+
+    /**
+     * @Route("/{id}", methods={"GET"})
+     *
+     * @IsGranted("ROLE_ADMIN")
+     *
+     * @param int $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function show(int $id): Response
+    {
+        $user = $this->getUserRepository()->find($id);
+
+        if (null === $user) {
+            $this->createNotFoundException(sprintf('User with id %d not found', $id));
+        }
+
+        $json = $this->serializer->serialize($user, 'json', [
+            'groups' => [
+                'show_user',
+                'with_balance',
+            ],
+        ]);
+
+        return JsonResponse::fromJsonString($json);
     }
 
     /**
