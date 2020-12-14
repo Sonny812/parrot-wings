@@ -10,6 +10,7 @@
 namespace App\Controller\API;
 
 use App\DTO\RestListDTO;
+use App\DTO\UpdateUserDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Response\RestListResponse;
@@ -18,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -95,6 +97,45 @@ class UserController extends AbstractController
                 'with_balance',
             ],
         ]);
+
+        return JsonResponse::fromJsonString($json);
+    }
+
+    /**
+     * @Route("/{id}", methods={"PUT"})
+     *
+     * @IsGranted("ROLE_ADMIN")
+     *
+     * @param int                    $id
+     * @param \App\DTO\UpdateUserDTO $userDTO
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function update(int $id, UpdateUserDTO $userDTO): Response
+    {
+        $repository = $this->getUserRepository();
+        $user       = $repository->find($id);
+
+        if (null === $user) {
+            $this->createNotFoundException(sprintf('User with id %d not found', $id));
+        }
+
+        $email = $userDTO->getEmail();
+
+        if ($repository->findOneBy(['email' => $email]) !== $user && $user->getEmail() !== $email) {
+            throw new ConflictHttpException('Email already in use');
+        }
+
+        $user->updateFromDTO($userDTO);
+
+        $json = $this->serializer->serialize($user, 'json', [
+            'groups' => [
+                'show_user',
+                'with_balance',
+            ],
+        ]);
+
+        $this->em->flush();;
 
         return JsonResponse::fromJsonString($json);
     }

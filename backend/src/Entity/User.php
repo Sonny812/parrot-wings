@@ -9,6 +9,7 @@
 
 namespace App\Entity;
 
+use App\DTO\UpdateUserDTO;
 use App\Entity\Account\AbstractAccount;
 use App\Entity\Account\UserAccount;
 use Doctrine\ORM\Mapping as ORM;
@@ -109,6 +110,16 @@ class User implements UserInterface
         $this->roles   = [];
         $this->blocked = false;
         $this->salt    = bin2hex(random_bytes(64));
+    }
+
+    /**
+     * @param \App\DTO\UpdateUserDTO $updateUserDTO
+     */
+    public function updateFromDTO(UpdateUserDTO $updateUserDTO): void
+    {
+        $this->username = (string)$updateUserDTO->getUsername();
+        $this->email    = (string)$updateUserDTO->getEmail();
+        $this->blocked  = (bool)$updateUserDTO->getBlocked();
     }
 
     /**
