@@ -7,6 +7,7 @@ import authProvider from './authProvider';
 import Register from './register'
 import CustomLayout from './customLayout';
 import {TransactionList, TransactionShow, TransactionCreate} from "./transaction";
+import {UserList, UserShow} from "./user";
 
 const httpClient = (url, options = {}) => {
     if (!options.headers) {
@@ -29,8 +30,18 @@ const App = () => (
             <Route exact path="/register" component={Register} noLayout/>
         ]}
     >
-        <Resource name='transaction' create={TransactionCreate} show={TransactionShow} list={TransactionList}/>
-        <Resource name='user'/>
+        {
+            permissions => [
+                <Resource name='transaction'
+                          create={!permissions.includes('ROLE_ADMIN') ? TransactionCreate : null}
+                          show={TransactionShow}
+                          list={TransactionList}/>,
+                <Resource name='user'
+                          list={permissions.includes('ROLE_ADMIN') ? UserList : null}
+                          show={permissions.includes('ROLE_ADMIN') ? UserShow : null}
+                />
+            ]
+        }
     </Admin>
 );
 
