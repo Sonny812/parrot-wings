@@ -3,7 +3,6 @@ import {
     List,
     Datagrid,
     TextField,
-    DateField,
     ShowButton,
     SimpleShowLayout,
     Show,
@@ -14,12 +13,10 @@ import {
     SimpleForm,
     TextInput,
     BooleanInput,
+    NumberInput,
     EditButton,
     Toolbar,
     SaveButton,
-    AutocompleteInput,
-    required,
-    minValue,
     useNotify,
     Filter,
 } from 'react-admin';
@@ -27,7 +24,8 @@ import {
 const UserFilter = (props) => (
     <Filter {...props}>
         <TextInput label="Search" source="q" alwaysOn/>
-
+        <NumberInput label="Balance from" source="balance.from"/>
+        <NumberInput label="Balance to" source="balance.to"/>
     </Filter>
 );
 

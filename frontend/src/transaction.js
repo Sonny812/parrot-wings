@@ -11,15 +11,32 @@ import {
     Create,
     SimpleForm,
     NumberInput,
+    DateInput,
     ReferenceInput,
     AutocompleteInput,
     required,
     minValue,
-    useNotify
+    useNotify,
+    Filter
 } from 'react-admin';
 
+const TransactionFilter = (props) => (
+    <Filter {...props}>
+        <ReferenceInput source="from" reference="user">
+            <AutocompleteInput optionText="account.displayName"/>
+        </ReferenceInput>
+        <ReferenceInput source="to" reference="user">
+            <AutocompleteInput optionText="account.displayName"/>
+        </ReferenceInput>
+        <DateInput label="Date after" source="date.after"/>
+        <DateInput label="Date from" source="date.before"/>
+        <NumberInput label="Amount from" source="amount.from"/>
+        <NumberInput label="Amount to" source="amount.to"/>
+    </Filter>
+);
+
 export const TransactionList = (props) => (
-    <List {...props} sort={{field: 'createdAt', order: 'DESC'}}>
+    <List {...props} sort={{field: 'createdAt', order: 'DESC'}} filters={<TransactionFilter/>}>
         <Datagrid>
             <TextField source="id"/>
             <DateField source="createdAt" showTime/>

@@ -2,7 +2,7 @@ import React from 'react';
 import {Admin, Resource, fetchUtils, ListGuesser, ShowGuesser} from 'react-admin';
 import {Route} from 'react-router-dom';
 import Login from "./login";
-import jsonServerProvider from 'ra-data-json-server'
+import myJsonServerProvider from "./myJsonServerProvider";
 import authProvider from './authProvider';
 import Register from './register'
 import CustomLayout from './customLayout';
@@ -25,7 +25,7 @@ const App = () => (
         authProvider={authProvider}
         loginPage={Login}
         layout={CustomLayout}
-        dataProvider={jsonServerProvider(process.env.REACT_APP_API_URL, httpClient)}
+        dataProvider={myJsonServerProvider(process.env.REACT_APP_API_URL, httpClient)}
         customRoutes={[
             <Route exact path="/register" component={Register} noLayout/>
         ]}
