@@ -41,6 +41,10 @@ class TransactionManager
      */
     public function makeTransaction(AbstractAccount $from, AbstractAccount $to, int $amount): Transaction
     {
+        if ($from === $to) {
+            throw new ConflictHttpException('Unable to make transaction when the recipient and sender are same.');
+        }
+
         $transaction = new Transaction($from, $to, $amount);
 
         try {
