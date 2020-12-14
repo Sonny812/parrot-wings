@@ -22,13 +22,20 @@ class UserFilterDTO
     private ?RangeDTO $balanceRangeDTO;
 
     /**
+     * @var string|null
+     */
+    private ?string $searchQuery;
+
+    /**
      * UserFilterDTO constructor.
      *
      * @param \App\DTO\Common\RangeDTO|null $balanceRangeDTO
+     * @param string|null                   $searchQuery
      */
-    public function __construct(?RangeDTO $balanceRangeDTO)
+    public function __construct(?RangeDTO $balanceRangeDTO, ?string $searchQuery)
     {
         $this->balanceRangeDTO = $balanceRangeDTO;
+        $this->searchQuery     = $searchQuery;
     }
 
     /**
@@ -38,7 +45,10 @@ class UserFilterDTO
      */
     public static function createFromFilterArray(array $filter): self
     {
-        return new self(RangeDTO::createFromBoundsArray($filter['balance'] ?? []));
+        return new self(
+            RangeDTO::createFromBoundsArray($filter['balance'] ?? []),
+            $filter['q'] ?? null
+        );
     }
 
     /**
@@ -47,5 +57,13 @@ class UserFilterDTO
     public function getBalanceRangeDTO(): ?RangeDTO
     {
         return $this->balanceRangeDTO;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSearchQuery(): ?string
+    {
+        return $this->searchQuery;
     }
 }

@@ -59,12 +59,6 @@ class UserController extends AbstractController
         $repository = $this->getUserRepository();
         $qb         = $repository->getQueryForFilteredList($restListDTO->getUserFilterDTO());
 
-        $searchQuery = $restListDTO->getSearchQuery();
-
-        if (null !== $searchQuery) {
-            $repository->applySearchQuery($qb, $searchQuery);
-        }
-        
         $groups = ['list_user'];
 
         if ($this->isGranted('ROLE_ADMIN')) {

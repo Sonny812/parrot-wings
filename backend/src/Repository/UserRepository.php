@@ -40,26 +40,6 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * @param \Doctrine\ORM\QueryBuilder $qb
-     * @param string                     $searchQuery
-     *
-     * @return $this
-     */
-    public function applySearchQuery(QueryBuilder $qb, string $searchQuery): self
-    {
-        $qb
-            ->andWhere(
-                $qb->expr()->orX(
-                    'user.email LIKE :search_query',
-                    'user.username LIKE :search_query'
-                )
-            )
-            ->setParameter(':search_query', "%$searchQuery%");
-
-        return $this;
-    }
-
-    /**
      * @param \Doctrine\ORM\QueryBuilder  $qb
      * @param \App\DTO\UserFilterDTO|null $userFilterDTO
      *
@@ -87,6 +67,21 @@ class UserRepository extends EntityRepository
                     ->andWhere('account.balance <= :max_balance')
                     ->setParameter('max_balance', $max);
             }
+        }
+
+        $searchQuery = $userFilterDTO->getSearchQuery();
+
+        if (null !== $searchQuery) {
+            $qb
+                ->andWhere(
+                    $qb->expr()->orX(
+                        'user.email LIKE :search_query',
+                        'user.username LIKE :search_query'
+                    )
+                )
+                ->setParameter(':search_query', "%$searchQuery%");
+
+            return $this;
         }
 
         return $this;

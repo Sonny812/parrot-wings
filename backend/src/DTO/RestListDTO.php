@@ -51,19 +51,17 @@ class RestListDTO
     /**
      * RestListDTO constructor.
      *
-     * @param int         $start
-     * @param int         $end
-     * @param string      $sortDirection
-     * @param string      $sortField
-     * @param string|null $searchQuery
+     * @param int    $start
+     * @param int    $end
+     * @param string $sortDirection
+     * @param string $sortField
      */
-    public function __construct(int $start, int $end, string $sortDirection, string $sortField, ?string $searchQuery)
+    public function __construct(int $start, int $end, string $sortDirection, string $sortField)
     {
         $this->start         = $start;
         $this->end           = $end;
         $this->sortDirection = $sortDirection;
         $this->sortField     = $sortField;
-        $this->searchQuery   = $searchQuery;
     }
 
     /**
@@ -89,7 +87,6 @@ class RestListDTO
             (int)$end,
             $data['_order'] ?? 'ASC',
             $data['_sort'] ?? 'id',
-            $data['q'] ?? null,
         );
     }
 

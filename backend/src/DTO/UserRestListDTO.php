@@ -21,13 +21,17 @@ class UserRestListDTO extends RestListDTO
     private ?UserFilterDTO $userFilterDTO;
 
     /**
+     * @var string|null
+     */
+    private ?string $searchQuery;
+
+    /**
      * UserRestListDTO constructor.
      *
      * @param int                         $start
      * @param int                         $end
      * @param string                      $sortDirection
      * @param string                      $sortField
-     * @param string|null                 $searchQuery
      * @param \App\DTO\UserFilterDTO|null $userFilterDTO
      */
     public function __construct(
@@ -35,10 +39,9 @@ class UserRestListDTO extends RestListDTO
         int $end,
         string $sortDirection,
         string $sortField,
-        ?string $searchQuery,
         ?UserFilterDTO $userFilterDTO
     ) {
-        parent::__construct($start, $end, $sortDirection, $sortField, $searchQuery);
+        parent::__construct($start, $end, $sortDirection, $sortField);
         $this->userFilterDTO = $userFilterDTO;
     }
 
@@ -57,7 +60,6 @@ class UserRestListDTO extends RestListDTO
             (int)$end,
             $data['_order'] ?? 'ASC',
             $data['_sort'] ?? 'id',
-            $data['q'] ?? null,
             UserFilterDTO::createFromFilterArray($data['filter'] ?? [])
         );
     }
