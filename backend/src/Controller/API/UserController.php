@@ -9,8 +9,8 @@
 
 namespace App\Controller\API;
 
-use App\DTO\RestListDTO;
 use App\DTO\UpdateUserDTO;
+use App\DTO\UserRestListDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Response\RestListResponse;
@@ -50,11 +50,11 @@ class UserController extends AbstractController
     /**
      * @Route("", methods={"GET"})
      *
-     * @param \App\DTO\RestListDTO $restListDTO
+     * @param \App\DTO\UserRestListDTO $restListDTO
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(RestListDTO $restListDTO): Response
+    public function index(UserRestListDTO $restListDTO): Response
     {
         $repository = $this->getUserRepository();
         $qb         = $repository->createDefaultQueryBuilder();

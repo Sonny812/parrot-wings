@@ -38,6 +38,8 @@ class RestListDTO
 
     /**
      * @var string
+     *
+     * @Assert\Choice(callback="getSortFields")
      */
     private string $sortField;
 
@@ -65,6 +67,14 @@ class RestListDTO
     }
 
     /**
+     * @return array|string[]
+     */
+    public static function getSortFields(): array
+    {
+        return ['id'];
+    }
+
+    /**
      * @param array $data
      *
      * @return static
@@ -74,7 +84,7 @@ class RestListDTO
         $start = $data['_start'] ?? 0;
         $end   = $data['_end'] ?? 10;
 
-        return new self(
+        return new static(
             (int)$start,
             (int)$end,
             $data['_order'] ?? 'ASC',

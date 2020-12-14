@@ -36,7 +36,9 @@ class RestListDTOResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        return $argument->getType() === RestListDTO::class;
+        $type = $argument->getType();
+
+        return $type === RestListDTO::class || is_subclass_of($type, RestListDTO::class);
     }
 
     /**
@@ -46,7 +48,10 @@ class RestListDTOResolver implements ArgumentValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $dto = RestListDTO::createFromRequestData($request->query->all());
+        /** @var RestListDTO $type */
+        $type = $argument->getType();
+
+        $dto = $type::createFromRequestData($request->query->all());
 
         $violations = $this->validator->validate($dto);
 

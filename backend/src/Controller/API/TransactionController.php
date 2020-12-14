@@ -10,7 +10,7 @@
 namespace App\Controller\API;
 
 use App\DTO\MakeTransactionDTO;
-use App\DTO\RestListDTO;
+use App\DTO\TransactionRestListDTO;
 use App\Entity\Account\UserAccount;
 use App\Entity\Transaction;
 use App\Repository\Account\UserAccountRepository;
@@ -54,11 +54,11 @@ class TransactionController extends AbstractController
     /**
      * @Route("", methods={"GET"})
      *
-     * @param \App\DTO\RestListDTO $restListDTO
+     * @param \App\DTO\TransactionRestListDTO $restListDTO
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(RestListDTO $restListDTO): Response
+    public function index(TransactionRestListDTO $restListDTO): Response
     {
         $repository = $this->getTransactionRepository();
 
