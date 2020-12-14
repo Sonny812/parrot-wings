@@ -45,7 +45,7 @@ class ExceptionHandler implements EventSubscriberInterface
 
         $event->setResponse(new JsonResponse([
             'errors' => $exception->getErrors(),
-        ], Response::HTTP_UNAUTHORIZED));
+        ], Response::HTTP_BAD_REQUEST));
 
         $event->stopPropagation();
     }
