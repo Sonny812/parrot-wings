@@ -87,6 +87,8 @@ class User implements UserInterface
      * @var bool
      *
      * @ORM\Column(type="boolean")
+     *
+     * @Groups({"show_user"})
      */
     private bool $blocked;
 
