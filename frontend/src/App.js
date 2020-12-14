@@ -7,7 +7,7 @@ import authProvider from './authProvider';
 import Register from './register'
 import CustomLayout from './customLayout';
 import {TransactionList, TransactionShow, TransactionCreate} from "./transaction";
-import {UserList, UserShow} from "./user";
+import {UserEdit, UserList, UserShow} from "./user";
 
 const httpClient = (url, options = {}) => {
     if (!options.headers) {
@@ -39,6 +39,7 @@ const App = () => (
                 <Resource name='user'
                           list={permissions.includes('ROLE_ADMIN') ? UserList : null}
                           show={permissions.includes('ROLE_ADMIN') ? UserShow : null}
+                          edit={permissions.includes('ROLE_ADMIN') ? UserEdit : null}
                 />
             ]
         }
