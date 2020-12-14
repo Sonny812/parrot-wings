@@ -43,8 +43,11 @@ class ExceptionHandler implements EventSubscriberInterface
             return;
         }
 
+        $errors = $exception->getErrors();
+
         $event->setResponse(new JsonResponse([
-            'errors' => $exception->getErrors(),
+            'message' => implode(array_map(fn(array $error) => $error['text'], $errors)),
+            'errors'  => $errors,
         ], Response::HTTP_BAD_REQUEST));
 
         $event->stopPropagation();
@@ -56,12 +59,16 @@ class ExceptionHandler implements EventSubscriberInterface
     public function onHttpException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
+        
         if (!$exception instanceof HttpException) {
             return;
         }
 
+        $message = $exception->getMessage();
+
         $event->setResponse(new JsonResponse([
-            'errors' => [['text' => $exception->getMessage()]],
+            'message' => $message,
+            'errors'  => [['text' => $message]],
         ], $exception->getStatusCode()));
 
         $event->stopPropagation();
