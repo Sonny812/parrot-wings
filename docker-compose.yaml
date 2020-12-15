@@ -17,6 +17,7 @@ services:
         environment:
             WAIT_FOR_MYSQL_TIMEOUT: ~
             DATABASE_URL:           mysql://user:password@mysql/parrot-wings
+            MERCURE_PUBLISH_URL:    http://mercure/.well-known/mercure
         links:
             - mysql
         depends_on:
@@ -39,3 +40,9 @@ services:
             - ${FRONTEND_PORT}:3000
 
 
+    mercure:
+        image: dunglas/mercure
+        environment:
+            JWT_KEY: ${MERCURE_SECRET}
+        ports:
+            - ${MERCURE_PORT}:80
