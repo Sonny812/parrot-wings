@@ -44,12 +44,9 @@ export default (type, params) => {
 
     if (type === AUTH_GET_PERMISSIONS) {
         const user = localStorage.getItem('user');
+        const roles = JSON.parse(user)?.roles;
 
-        if (!user) {
-            Promise.reject();
-        } else {
-            Promise.resolve(JSON.parse(user).roles);
-        }
+        return Promise.resolve(roles ?? ['ROLE_GUEST']);
     }
 
     return Promise.resolve();
