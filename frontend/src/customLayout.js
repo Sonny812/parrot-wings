@@ -48,7 +48,7 @@ const UserData = props => {
     return (
         <div>
             <div>{user.username}</div>
-            <UserBalance delay={3000}/>
+            {user.account && <UserBalance delay={3000}/>}
         </div>
     )
 };
