@@ -14,9 +14,11 @@ const httpClient = (url, options = {}) => {
         options.headers = new Headers({Accept: 'application/json'});
     }
 
-    const {token} = JSON.parse(localStorage.getItem('user'));
-    options.headers.set('X-AUTH-TOKEN', token);
-
+    const user = localStorage.getItem('user');
+    if (user) {
+        const {token} = JSON.parse(user);
+        options.headers.set('X-AUTH-TOKEN', token);
+    }
     return fetchUtils.fetchJson(url, options);
 };
 
@@ -33,13 +35,13 @@ const App = () => (
         {
             permissions => [
                 <Resource name='transaction'
-                          create={!permissions.includes('ROLE_ADMIN') ? TransactionCreate : null}
+                          create={!permissions || !permissions.includes('ROLE_ADMIN') ? TransactionCreate : null}
                           show={TransactionShow}
                           list={TransactionList}/>,
                 <Resource name='user'
-                          list={permissions.includes('ROLE_ADMIN') ? UserList : null}
-                          show={permissions.includes('ROLE_ADMIN') ? UserShow : null}
-                          edit={permissions.includes('ROLE_ADMIN') ? UserEdit : null}
+                          list={permissions && permissions.includes('ROLE_ADMIN') ? UserList : null}
+                          show={permissions && permissions.includes('ROLE_ADMIN') ? UserShow : null}
+                          edit={permissions && permissions.includes('ROLE_ADMIN') ? UserEdit : null}
                 />
             ]
         }
