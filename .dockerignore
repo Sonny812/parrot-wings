@@ -1,0 +1,4 @@
+/backend/var
+/backend/vendor
+/backend/.env.local
+/frontend/node_modules/
