@@ -12,6 +12,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
@@ -21,16 +22,20 @@ class AppFixtures extends Fixture
 
     private TransactionManager $transactionManager;
 
+    private UserPasswordEncoderInterface $passwordEncoder;
+
     /**
      * AppFixtures constructor.
      *
-     * @param \App\User\UserFactory               $userFactory
-     * @param \App\Transaction\TransactionManager $transactionManager
+     * @param \App\User\UserFactory                                                 $userFactory
+     * @param \App\Transaction\TransactionManager                                   $transactionManager
+     * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder
      */
-    public function __construct(UserFactory $userFactory, TransactionManager $transactionManager)
+    public function __construct(UserFactory $userFactory, TransactionManager $transactionManager, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->userFactory        = $userFactory;
         $this->transactionManager = $transactionManager;
+        $this->passwordEncoder    = $passwordEncoder;
         $this->faker              = Factory::create('en');
     }
 
@@ -45,7 +50,7 @@ class AppFixtures extends Fixture
         $users = [];
 
         for ($i = 0; $i < 50; $i++) {
-            $user = $this->createUser();
+            $user = $this->createRandomUser();
             $manager->persist($user);
             $users [] = $user;
         }
@@ -66,6 +71,8 @@ class AppFixtures extends Fixture
             $this->transactionManager->makeTransaction($from, $to, $amount);
         }
 
+        $manager->persist($this->createAdmin());
+
         $manager->flush();
     }
 
@@ -83,7 +90,7 @@ class AppFixtures extends Fixture
     /**
      * @return \App\Entity\User
      */
-    private function createUser(): User
+    private function createRandomUser(): User
     {
         $registerUserDTO = new RegisterUserDTO(
             $this->faker->name,
@@ -92,5 +99,21 @@ class AppFixtures extends Fixture
         );
 
         return $this->userFactory->createUserFromRegisterDTO($registerUserDTO);
+    }
+
+    /**
+     * @return \App\Entity\User
+     */
+    private function createAdmin(): User
+    {
+        $admin = new User();
+
+        $admin
+            ->setUsername('John Smith')
+            ->setEmail('admin@example.com')
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPassword($this->passwordEncoder->encodePassword($admin, 'admin'));
+
+        return $admin;
     }
 }
