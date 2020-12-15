@@ -11,7 +11,7 @@ import {
     Create,
     SimpleForm,
     NumberInput,
-    DateInput,
+    DateTimeInput,
     ReferenceInput,
     AutocompleteInput,
     required,
@@ -28,8 +28,8 @@ const TransactionFilter = (props) => (
         <ReferenceInput source="to" reference="user">
             <AutocompleteInput optionValue="account.id" optionText="account.displayName"/>
         </ReferenceInput>
-        <DateInput label="Date after" source="date.after"/>
-        <DateInput label="Date from" source="date.before"/>
+        <DateTimeInput label="Date before" source="date.before"/>
+        <DateTimeInput label="Date after" source="date.after"/>
         <NumberInput label="Amount from" source="amount.from"/>
         <NumberInput label="Amount to" source="amount.to"/>
     </Filter>

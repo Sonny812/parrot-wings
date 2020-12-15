@@ -114,7 +114,7 @@ class TransactionRepository extends EntityRepository
             $max = $dateRangeDto->getMax();
             if (null !== $max) {
                 $qb
-                    ->andWhere('transaction.create <= :date_max')
+                    ->andWhere('transaction.createdAt <= :date_max')
                     ->setParameter('date_max', $max);
             }
         }

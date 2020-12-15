@@ -46,8 +46,8 @@ class DateRangeDTO
      */
     public static function createFromBoundsArray(array $bounds): self
     {
-        $from = $bounds['from'] ?? null;
-        $to   = $bounds['to'] ?? null;
+        $from = $bounds['after'] ?? null;
+        $to   = $bounds['before'] ?? null;
 
         return new self(
             self::isDate($from) ? new DateTimeImmutable($from) : null,
