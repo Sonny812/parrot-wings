@@ -117,7 +117,6 @@ const Register = (props) => {
             fetch(process.env.REACT_APP_API_URL + '/register', request)
                 .then(response => response.json().then(data => ({status: response.status, data: data})))
                 .then(response => {
-                    console.log(response);
                     if (response.status < 200 || response.status >= 300) {
                         const errorText = response.data.errors.map(error => error.text).join();
 
