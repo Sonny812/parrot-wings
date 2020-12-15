@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {AppBar, Layout} from 'react-admin';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
-import useInterval from "@use-it/interval";
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
 
 const styles = {
     title: {
@@ -16,22 +17,33 @@ const styles = {
     },
 };
 
-const UserBalance = ({delay, user}) => {
+const UserBalance = ({user}) => {
     const [balance, setBalance] = useState(user.account.balance);
 
     const fetchConfig = {headers: {'X-AUTH-TOKEN': user.token}};
 
-    useInterval(() => {
-        fetch(process.env.REACT_APP_API_URL + '/balance', fetchConfig)
-            .then(response => response.json())
-            .then(data => {
-                const {balance} = data;
-                setBalance(balance);
-                user.account.balance = balance;
-                localStorage.setItem('user', JSON.stringify(user))
-            });
+    fetch(process.env.REACT_APP_API_URL + '/balance', fetchConfig)
+        .then(r => r.json().then(json => ({headers: r.headers, json: json})))
+        .then(obj => {
+            const json = obj.json;
+            const {balance, subscribeTopic, token} = json;
 
-    }, delay);
+            setBalance(balance);
+
+            user.account.balance = balance;
+            localStorage.setItem('user', JSON.stringify(user));
+
+            const hubUrl = obj.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
+            const hub = new URL(hubUrl);
+            hub.searchParams.append('topic', subscribeTopic);
+
+            const eventSource = new EventSourcePolyfill(hub, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            eventSource.onmessage = event => setBalance(event.balance);
+        });
 
     return <div>{balance}</div>
 }

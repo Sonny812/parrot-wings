@@ -17,19 +17,20 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class TransactionManager
 {
-    /**
-     * @var \Doctrine\ORM\EntityManagerInterface
-     */
     private EntityManagerInterface $em;
+
+    private TransactionPublisher $transaction;
 
     /**
      * TransactionManager constructor.
      *
-     * @param \Doctrine\ORM\EntityManagerInterface $em
+     * @param \Doctrine\ORM\EntityManagerInterface  $em
+     * @param \App\Transaction\TransactionPublisher $transactionPublisher
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, TransactionPublisher $transactionPublisher)
     {
-        $this->em = $em;
+        $this->em          = $em;
+        $this->transaction = $transactionPublisher;
     }
 
     /**
@@ -59,6 +60,8 @@ class TransactionManager
         } catch (NegativeBalanceException $exception) {
             throw new ConflictHttpException('Creating this transaction will result in a negative balance on any account');
         }
+
+        $this->transaction->publish($transaction);
 
         return $transaction;
     }

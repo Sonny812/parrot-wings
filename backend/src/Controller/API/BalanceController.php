@@ -9,10 +9,12 @@
 
 namespace App\Controller\API;
 
+use App\Mercure\TokenFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\WebLink\Link;
 
 /**
  * Balance controller
@@ -21,12 +23,26 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BalanceController extends AbstractController
 {
+    private TokenFactory $tokenFactory;
+
+    /**
+     * BalanceController constructor.
+     *
+     * @param \App\Mercure\TokenFactory $tokenFactory
+     */
+    public function __construct(TokenFactory $tokenFactory)
+    {
+        $this->tokenFactory = $tokenFactory;
+    }
+
     /**
      * @Route("", methods={"GET"})
      *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function show(): Response
+    public function show(Request $request): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -37,8 +53,15 @@ class BalanceController extends AbstractController
             $this->createNotFoundException('User account not found');
         }
 
-        return new JsonResponse([
-            'balance' => $account->getBalance(),
+        $hubUrl = $this->getParameter('mercure.default_hub');
+        $this->addLink($request, new Link('mercure', $hubUrl));
+
+        $topic = sprintf('balance/%d', $account->getId());
+
+        return $this->json([
+            'balance'        => $account->getBalance(),
+            'subscribeTopic' => $topic,
+            'token'          => $this->tokenFactory->createSubscribeToken([$topic]),
         ]);
     }
 }
