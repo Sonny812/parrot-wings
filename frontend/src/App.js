@@ -1,5 +1,5 @@
 import React from 'react';
-import {Admin, Resource, fetchUtils, ListGuesser, ShowGuesser} from 'react-admin';
+import {Admin, Resource, fetchUtils} from 'react-admin';
 import {Route} from 'react-router-dom';
 import Login from "./login";
 import myJsonServerProvider from "./myJsonServerProvider";

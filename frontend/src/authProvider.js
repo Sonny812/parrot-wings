@@ -1,6 +1,6 @@
 import {AUTH_LOGIN, AUTH_CHECK, AUTH_LOGOUT, AUTH_ERROR, AUTH_GET_PERMISSIONS} from 'react-admin';
 
-export default (type, params) => {
+const authProvider = (type, params) => {
     if (type === AUTH_LOGIN) {
         const {username, password} = params;
         const request = new Request(process.env.REACT_APP_API_URL + '/login', {
@@ -51,3 +51,5 @@ export default (type, params) => {
 
     return Promise.resolve();
 }
+
+export default authProvider;

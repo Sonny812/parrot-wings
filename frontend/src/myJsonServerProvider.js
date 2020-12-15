@@ -1,12 +1,12 @@
 import {stringify} from 'query-string';
 import {fetchUtils, DataProvider} from 'ra-core';
 
-export default (apiUrl, httpClient = fetchUtils.fetchJson): DataProvider => ({
+const myJsonDataProvider =  (apiUrl, httpClient = fetchUtils.fetchJson): DataProvider => ({
     getList: (resource, params) => {
         const {page, perPage} = params.pagination;
         const {field, order} = params.sort;
         const filter = fetchUtils.flattenObject(params.filter);
-        Object.keys(filter).map(key => {
+        Object.keys(filter).forEach(key => {
             const newKey = 'filter' + key.split('.').map(keyPart => `[${keyPart}]`).join('');
             filter[newKey] = filter[key];
             delete filter[key];
@@ -118,3 +118,6 @@ export default (apiUrl, httpClient = fetchUtils.fetchJson): DataProvider => ({
             )
         ).then(responses => ({data: responses.map(({json}) => json.id)})),
 });
+
+
+export default myJsonDataProvider;

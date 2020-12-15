@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     }
 });
 
-export default () => {
+const MyLogin = () => {
     const classes = useStyles();
 
     return (
@@ -23,3 +23,5 @@ export default () => {
         </Login>
     )
 };
+
+export default MyLogin;
