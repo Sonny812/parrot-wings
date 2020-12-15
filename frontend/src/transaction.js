@@ -23,10 +23,10 @@ import {
 const TransactionFilter = (props) => (
     <Filter {...props}>
         <ReferenceInput source="from" reference="user">
-            <AutocompleteInput optionText="account.displayName"/>
+            <AutocompleteInput optionValue="account.id" optionText="account.displayName"/>
         </ReferenceInput>
         <ReferenceInput source="to" reference="user">
-            <AutocompleteInput optionText="account.displayName"/>
+            <AutocompleteInput optionValue="account.id" optionText="account.displayName"/>
         </ReferenceInput>
         <DateInput label="Date after" source="date.after"/>
         <DateInput label="Date from" source="date.before"/>

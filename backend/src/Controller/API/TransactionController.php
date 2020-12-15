@@ -62,13 +62,15 @@ class TransactionController extends AbstractController
     {
         $repository = $this->getTransactionRepository();
 
+        $filterDTO = $restListDTO->getTransactionFilterDTO();
+
         if ($this->isGranted('ROLE_ADMIN')) {
-            $qb = $repository->createDefaultQueryBuilder();
+            $qb = $repository->getQueryBuilderForFilteredList($filterDTO);
         } else {
             /** @var \App\Entity\User $user */
             $user = $this->getUser();
 
-            $qb = $repository->createQueryBuilderForAccount($user->getAccount());
+            $qb = $repository->getQueryBuilderForFilteredListForAccount($filterDTO, $user->getAccount());
         }
 
         return new RestListResponse($restListDTO, $qb, $this->serializer, ['list_transaction']);
