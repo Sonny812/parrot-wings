@@ -68,7 +68,7 @@ class AppFixtures extends Fixture
 
             $amount = $this->faker->numberBetween(1, $fromBalance);
 
-            $this->transactionManager->makeTransaction($from, $to, $amount);
+            $this->transactionManager->makeTransaction($from, $to, $amount, false);
         }
 
         $manager->persist($this->createAdmin());

@@ -63,7 +63,12 @@ class UserAccountFactory implements AccountFactoryInterface
             return;
         }
 
-        $this->transactionManager->makeTransaction($welcomeBonusAccount, $account, self::WELCOME_BONUS_AMOUNT);
+        $this->transactionManager->makeTransaction(
+            $welcomeBonusAccount,
+            $account,
+            self::WELCOME_BONUS_AMOUNT,
+            false
+        );
     }
 
     /**

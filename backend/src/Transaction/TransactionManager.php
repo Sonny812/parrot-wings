@@ -38,10 +38,16 @@ class TransactionManager
      * @param \App\Entity\Account\AbstractAccount $to
      * @param int                                 $amount
      *
+     * @param bool                                $publishTransaction
+     *
      * @return \App\Entity\Transaction
      */
-    public function makeTransaction(AbstractAccount $from, AbstractAccount $to, int $amount): Transaction
-    {
+    public function makeTransaction(
+        AbstractAccount $from,
+        AbstractAccount $to,
+        int $amount,
+        bool $publishTransaction = true
+    ): Transaction {
         if ($from === $to) {
             throw new ConflictHttpException('Unable to make transaction when the recipient and sender are same.');
         }
@@ -61,7 +67,9 @@ class TransactionManager
             throw new ConflictHttpException('Creating this transaction will result in a negative balance on any account');
         }
 
-        $this->transaction->publish($transaction);
+        if ($publishTransaction) {
+            $this->transaction->publish($transaction);
+        }
 
         return $transaction;
     }
