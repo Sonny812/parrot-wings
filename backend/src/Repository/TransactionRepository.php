@@ -131,7 +131,7 @@ class TransactionRepository extends EntityRepository
     private function applyForAccount(QueryBuilder $qb, AbstractAccount $account): self
     {
         $qb
-            ->where(
+            ->andWhere(
                 $qb->expr()->orX(
                     'transaction.from = :account',
                     'transaction.to = :account'
