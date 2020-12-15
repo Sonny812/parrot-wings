@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {AppBar, Layout} from 'react-admin';
+import {AppBar, Layout, fetchUtils} from 'react-admin';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import {EventSourcePolyfill} from 'event-source-polyfill';
 
 
 const styles = {
@@ -20,12 +20,16 @@ const styles = {
 const UserBalance = ({user}) => {
     const [balance, setBalance] = useState(user.account.balance);
 
-    const fetchConfig = {headers: {'X-AUTH-TOKEN': user.token}};
+    const fetchConfig = {
+        headers: new Headers({
+            Accept: 'application/json',
+            'X-AUTH-TOKEN': user.token,
+        })
+    };
 
-    fetch(process.env.REACT_APP_API_URL + '/balance', fetchConfig)
-        .then(r => r.json().then(json => ({headers: r.headers, json: json})))
-        .then(obj => {
-            const json = obj.json;
+    fetchUtils
+        .fetchJson(process.env.REACT_APP_API_URL + '/balance', fetchConfig)
+        .then(({headers, json}) => {
             const {balance, subscribeTopic, token} = json;
 
             setBalance(balance);
@@ -33,8 +37,9 @@ const UserBalance = ({user}) => {
             user.account.balance = balance;
             localStorage.setItem('user', JSON.stringify(user));
 
-            const hubUrl = obj.headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
+            const hubUrl = headers.get('Link').match(/<([^>]+)>;\s+rel=(?:mercure|"[^"]*mercure[^"]*")/)[1];
             const hub = new URL(hubUrl);
+
             hub.searchParams.append('topic', subscribeTopic);
 
             const eventSource = new EventSourcePolyfill(hub, {
