@@ -77,7 +77,7 @@ export const TransactionCreate = (props) => {
         <SimpleForm>
             <NumberInput min={0} validate={validateAmount} source="amount"/>
             <ReferenceInput validate={required()} source="recipientId" reference="user">
-                <AutocompleteInput optionText="account.displayName"/>
+                <AutocompleteInput optionValue="account.id" optionText="account.displayName"/>
             </ReferenceInput>
         </SimpleForm>
     </Create>)
