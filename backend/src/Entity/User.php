@@ -94,13 +94,13 @@ class User implements UserInterface
     private bool $blocked;
 
     /**
-     * @var \App\Entity\Account\AbstractAccount
+     * @var \App\Entity\Account\AbstractAccount|null
      *
      * @ORM\OneToOne(targetEntity=UserAccount::class, cascade={"persist"}, inversedBy="user")
      *
      * @Groups({"show_user", "list_user"})
      */
-    private AbstractAccount $account;
+    private ?AbstractAccount $account;
 
     /**
      * User constructor.
@@ -283,19 +283,19 @@ class User implements UserInterface
     }
 
     /**
-     * @return \App\Entity\Account\AbstractAccount
+     * @return \App\Entity\Account\AbstractAccount|null
      */
-    public function getAccount(): AbstractAccount
+    public function getAccount(): ?AbstractAccount
     {
         return $this->account;
     }
 
     /**
-     * @param \App\Entity\Account\AbstractAccount $account
+     * @param \App\Entity\Account\AbstractAccount|null $account
      *
      * @return User
      */
-    public function setAccount(AbstractAccount $account): User
+    public function setAccount(?AbstractAccount $account): User
     {
         $this->account = $account;
 
