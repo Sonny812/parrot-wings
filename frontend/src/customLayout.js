@@ -39,6 +39,10 @@ const UserBalance = ({delay}) => {
 }
 
 const UserData = props => {
+    if (!localStorage.user) {
+        return null;
+    }
+
     const user = JSON.parse(localStorage.user);
 
     return (
