@@ -16,9 +16,7 @@ const styles = {
     },
 };
 
-const UserBalance = ({delay}) => {
-    const user = JSON.parse(localStorage.user);
-
+const UserBalance = ({delay, user}) => {
     const [balance, setBalance] = useState(user.account.balance);
 
     const fetchConfig = {headers: {'X-AUTH-TOKEN': user.token}};
@@ -48,7 +46,7 @@ const UserData = props => {
     return (
         <div>
             <div>{user.username}</div>
-            {user.account && <UserBalance delay={3000}/>}
+            {user.account && <UserBalance delay={3000} user={user}/>}
         </div>
     )
 };
