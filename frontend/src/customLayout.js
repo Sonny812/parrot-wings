@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {AppBar, Layout} from 'react-admin';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
+import useInterval from "@use-it/interval";
 
 const styles = {
     title: {
@@ -15,13 +16,35 @@ const styles = {
     },
 };
 
+const UserBalance = ({delay}) => {
+    const user = JSON.parse(localStorage.user);
+
+    const [balance, setBalance] = useState(user.account.balance);
+
+    const fetchConfig = {headers: {'X-AUTH-TOKEN': user.token}};
+
+    useInterval(() => {
+        fetch(process.env.REACT_APP_API_URL + '/balance', fetchConfig)
+            .then(response => response.json())
+            .then(data => {
+                const {balance} = data;
+                setBalance(balance);
+                user.account.balance = balance;
+                localStorage.setItem('user', JSON.stringify(user))
+            });
+
+    }, delay);
+
+    return <div>{balance}</div>
+}
+
 const UserData = props => {
     const user = JSON.parse(localStorage.user);
 
     return (
         <div>
             <div>{user.username}</div>
-            <div>{user.account.balance} PW</div>
+            <UserBalance delay={3000}/>
         </div>
     )
 };
