@@ -1,5 +1,73 @@
 # PW Application
 
+## Local deployment
+### Without Docker
+
+#### Requirements
+*   **PHP 7.4**
+*   **Symfony CLI**
+*   **MySQL 5.7 or 8.0**
+*   **[Mercure Hub](https://mercure.rocks/)**
+
+##### Deploy Mercure Hub
+Download the Mercure Hub binary and run it.
+```shell script
+./mercure --jwt-key='!ChangeMe!' --addr='localhost:3000' --allow-anonymous --cors-allowed-origins='*'
+```  
+Arguments:
+- `--jwt-key` - any string
+- `--addr` - address of host with any free port.
+
+##### Deploy backend
+```shell script
+cd backend
+
+composer install
+
+cp .env .env.local
+
+# edit .env.local
+
+php bin/console doctrine:database:create --if-not-exists
+php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+
+symfony server:start --allow-http --no-tls --port=8000 # Instead of 8000, you can use any free port
+```
+
+You have to set the next env variables:
+- MERCURE_SECRET - the key that you used when you deployed Mercure.
+- MERCURE_JWT_TOKEN - JWT for the Mercure key. The default value is valid JWT for the string `!ChangeMe!`.
+- MERCURE_PUBLISH_URL - the address where running your Mercure Hub.
+- DATABASE_URL - DSN string for your MySQL.
+
+##### Deploy frontend
+```shell script
+cd frontend
+
+yarn # or npm i
+
+cp .env .env.local
+
+# edit .env.local
+```
+You need to set the address where your backend is running to the `APP_REACT_API_URL` variable.
+
+Then you have to run `yarn start` or `npm run start` and the application will be available at http://localhost:3000
+
+### With Docker
+#### Requirements
+- Docker
+- Docker Compose
+
+To run the application with Docker you have to .env by copying the .env.dist file at the root of the project
+and set values for *_PORT variables. These can be any free ports.  
+Then run `docker-compose up`.   
+The app will be available at the port that you specified at the `FRONTEND_PORT` variable.
+
+Admin user credentials:
+`admin@example.com : admin`
+
 ## PW Application Overview
 The application is for Parrot Wings (PW, “internal money”) transfer between system users.
 
